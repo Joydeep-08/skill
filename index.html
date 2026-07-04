@@ -54,10 +54,20 @@
 
     // audio setup
     const bgm = document.getElementById('bgm');
-    bgm.volume = 0.15;       // low, constant background music
+    bgm.volume = 0.45;       // punchier background music
 
     function startBgm() {
-        bgm.play().catch(() => {}); // swallow autoplay-block errors
+        bgm.volume = 0;
+        bgm.play().then(() => {
+            // fade in from 0 to 0.45 over ~1.5s for a more dramatic entrance
+            let v = 0;
+            const target = 0.45;
+            const fade = setInterval(() => {
+                v += 0.03;
+                if (v >= target) { v = target; clearInterval(fade); }
+                bgm.volume = v;
+            }, 100);
+        }).catch(() => {});
     }
     startBgm();
     // fallback: if the browser blocked autoplay-with-sound, start on first click
